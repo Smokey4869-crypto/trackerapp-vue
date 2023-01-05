@@ -1,19 +1,78 @@
 <template>
   <div class="container">
-    <Header title="Tast Tracker" />
+    <Header @toggle-add-task="toggleAddTask" title="Tast Tracker" :showAddTask="showAddTask" />
+    <div v-show="showAddTask">
+      <AddTask @add-task="addTask" />
+    </div>
+    <Tasks
+      @toggle-reminder="toggleReminder"
+      @delete-task="deleteTask"
+      :tasks="tasks"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "./components/Header.vue";
+import Tasks from "./components/Tasks.vue";
+import AddTask from "./components/AddTask.vue";
+import { TaskModel } from "./types/TaskModel";
 
 @Options({
   components: {
     Header,
+    Tasks,
+    AddTask,
+  },
+  data() {
+    return {
+      tasks: [] as TaskModel[],
+      showAddTask: false,
+    };
+  },
+  created() {
+    this.tasks = [
+      {
+        id: 1,
+        text: "Doctors Appointment",
+        day: "March 1st at 2:30pm",
+        reminder: true,
+      },
+      {
+        id: 2,
+        text: "Meeting at School",
+        day: "March 3rd at 1:30pm",
+        reminder: true,
+      },
+    ];
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  tasks!: TaskModel[];
+  showAddTask!: boolean
+
+  //methods
+  addTask(task: TaskModel) {
+    this.tasks = [...this.tasks, task];
+  }
+
+  deleteTask(id: string) {
+    if (confirm("Are you sure?")) {
+      this.tasks = this.tasks.filter((task) => task.id !== id);
+    }
+  }
+
+  toggleReminder(id: string) {
+    this.tasks = this.tasks.map((task) =>
+      task.id === id ? { ...task, reminder: !task.reminder } : task
+    );
+  }
+
+  toggleAddTask() {
+    this.showAddTask = !this.showAddTask
+  }
+}
 </script>
 
 <style>
