@@ -31,21 +31,8 @@ import { TaskModel } from "./types/TaskModel";
       showAddTask: false,
     };
   },
-  created() {
-    this.tasks = [
-      {
-        id: 1,
-        text: "Doctors Appointment",
-        day: "March 1st at 2:30pm",
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: "Meeting at School",
-        day: "March 3rd at 1:30pm",
-        reminder: true,
-      },
-    ];
+  async created() {
+    this.tasks = await this.fetchTasks()
   },
 })
 export default class App extends Vue {
@@ -71,6 +58,20 @@ export default class App extends Vue {
 
   toggleAddTask() {
     this.showAddTask = !this.showAddTask
+  }
+
+  async fetchTasks() {
+    const res = await fetch('api/tasks')
+    const data = await res.json()
+
+    return data
+  }
+
+  async fetchTask(id: string) {
+    const res = await fetch(`api/tasks/${id}`)
+    const data = await res.json()
+
+    return data
   }
 }
 </script>
