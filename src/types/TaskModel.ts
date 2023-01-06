@@ -1,5 +1,5 @@
 export type TaskModel = {
-    id: string,
+    id?: string,
     text: string, 
     day: string,
     reminder: boolean

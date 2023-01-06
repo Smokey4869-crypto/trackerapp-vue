@@ -1,77 +1,36 @@
 <template>
   <div class="container">
-    <Header @toggle-add-task="toggleAddTask" title="Tast Tracker" :showAddTask="showAddTask" />
-    <div v-show="showAddTask">
-      <AddTask @add-task="addTask" />
-    </div>
-    <Tasks
-      @toggle-reminder="toggleReminder"
-      @delete-task="deleteTask"
-      :tasks="tasks"
+    <Header
+      @toggle-add-task="toggleAddTask"
+      title="Tast Tracker"
+      :showAddTask="showAddTask"
     />
+    <router-view :showAddTask="showAddTask"></router-view>
+    <Footer />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "./components/Header.vue";
-import Tasks from "./components/Tasks.vue";
-import AddTask from "./components/AddTask.vue";
-import { TaskModel } from "./types/TaskModel";
+import Footer from "./components/Footer.vue";
 
 @Options({
   components: {
     Header,
-    Tasks,
-    AddTask,
+    Footer,
   },
   data() {
     return {
-      tasks: [] as TaskModel[],
       showAddTask: false,
     };
-  },
-  async created() {
-    this.tasks = await this.fetchTasks()
-  },
+  }
 })
 export default class App extends Vue {
-  tasks!: TaskModel[];
-  showAddTask!: boolean
-
-  //methods
-  addTask(task: TaskModel) {
-    this.tasks = [...this.tasks, task];
-  }
-
-  deleteTask(id: string) {
-    if (confirm("Are you sure?")) {
-      this.tasks = this.tasks.filter((task) => task.id !== id);
-    }
-  }
-
-  toggleReminder(id: string) {
-    this.tasks = this.tasks.map((task) =>
-      task.id === id ? { ...task, reminder: !task.reminder } : task
-    );
-  }
+  showAddTask!: boolean;
 
   toggleAddTask() {
-    this.showAddTask = !this.showAddTask
-  }
-
-  async fetchTasks() {
-    const res = await fetch('api/tasks')
-    const data = await res.json()
-
-    return data
-  }
-
-  async fetchTask(id: string) {
-    const res = await fetch(`api/tasks/${id}`)
-    const data = await res.json()
-
-    return data
+    this.showAddTask = !this.showAddTask;
   }
 }
 </script>

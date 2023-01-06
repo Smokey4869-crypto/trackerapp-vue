@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import { TaskModel } from "@/types/TaskModel";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
@@ -45,8 +46,7 @@ export default class AddTask extends Vue {
             return
         }
 
-        const newTask = {
-            id: Math.floor(Math.random() * 10000),
+        const newTask: TaskModel = {
             text: this.text,
             day: this.day,
             reminder: this.reminder
